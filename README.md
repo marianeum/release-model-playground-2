@@ -1,4 +1,4 @@
 # release-model-playground
 Just a playground to test out a release idea
 
-This needs some more information and some minor changes
+This needs some more information and some patch changes
