@@ -4,3 +4,5 @@ Just a playground to test out a release idea
 This needs some more information and some changes.
 
 Critical change!
+
+Some other change!
