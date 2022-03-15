@@ -17,7 +17,14 @@ jobs:
         java-version: '11'
         distribution: 'adopt'
         cache: gradle
-
+    - name: Label reminder
+      uses: unsplash/comment-on-pr@v1.3.0
+      if: false == (contains(github.event.pull_request.labels.*.name, 'major') || contains(github.event.pull_request.labels.*.name, 'minor') || contains(github.event.pull_request.labels.*.name, 'patch'))
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        msg: "Add major/minor/patch label"
+        check_for_duplicate_msg: true
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
