@@ -12,8 +12,6 @@ jobs:
       - name: Get release tag
         id: get_release_tag
         uses: release-drafter/release-drafter@v5
-        with:
-          commitish: $GITHUB_REF
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: setup python
@@ -32,6 +30,5 @@ jobs:
         uses: release-drafter/release-drafter@v5
         with:
           publish: true
-          commitish: $GITHUB_REF
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
