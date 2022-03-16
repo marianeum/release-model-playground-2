@@ -1,0 +1,52 @@
+name: Version Bump
+
+on:
+  pull_request:
+    branches: [ main ]
+    types: [labeled, opened]
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'major') || contains(github.event.pull_request.labels.*.name, 'minor') || contains(github.event.pull_request.labels.*.name, 'patch')
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Get version
+        id: get-version
+        run: |
+          result=`python get_version.py`
+          echo "::set-output name=version::$(result)"
+      - name: Get bump level
+        id: bump-level
+        run: |
+          if [ contains(github.event.pull_request.labels.*.name, 'major') ]
+          then
+            bump = major
+          elif [ contains(github.event.pull_request.labels.*.name, 'minor') ]
+          then
+            bump = minor
+          else
+            bump = patch
+          fi
+          echo "::set-output name=level::$(bump)"
+      - name: Get bumped version
+        uses: actions-ecosystem/action-bump-semver@v1
+        id: bump-semver
+        with:
+          current_version: ${{ steps.get-version.outputs.version }}
+          level: ${{ steps.bump-level.outputs.level }}
+      - name: Bump version
+        run: |
+          python bump_version.py ${{ steps.bump-semver.outputs.new_version }}
+      - name: Commit version change
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+           commit_message: Version bump
